@@ -5,13 +5,16 @@
 }: let
   nixpkgs = inputs.nixpkgs;
 
-  commit = "2c85ebc57b3e1817b6ce1a6b703928e113a90442";
+  commit = builtins.readFile ./commit;
+  sha = builtins.readFile ./sha;
+  kversion = builtins.readFile ./version;
+
   kernel = pkgs.linuxPackages_custom {
     src = builtins.fetchTarball {
       url = "https://github.com/torvalds/linux/archive/${commit}.tar.gz";
-      sha256 = "1znxp4v7ykfz4fghzjzhd5mj9pj5qpk88n7k7nbkr5x2n0xqfj6k";
+      sha256 = sha;
     };
-    version = "5.10.0";
+    version = kversion;
     configfile = ./kconfig;
   };
 in {
