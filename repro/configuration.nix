@@ -4,6 +4,16 @@
   ...
 }: let
   nixpkgs = inputs.nixpkgs;
+
+  commit = "2c85ebc57b3e1817b6ce1a6b703928e113a90442";
+  kernel = pkgs.linuxPackages_custom {
+    src = builtins.fetchTarball {
+      url = "https://github.com/torvalds/linux/archive/${commit}.tar.gz";
+      sha256 = "1znxp4v7ykfz4fghzjzhd5mj9pj5qpk88n7k7nbkr5x2n0xqfj6k";
+    };
+    version = "5.10.0";
+    configfile = ./kconfig;
+  };
 in {
   imports = [
     "${nixpkgs}/nixos/modules/profiles/qemu-guest.nix"
@@ -23,6 +33,7 @@ in {
     fsType = "ext4";
     autoResize = true;
   };
+  boot.kernelPackages = kernel;
   boot.loader.grub.device = "/dev/vda";
   boot.loader.timeout = 0;
   networking.enableIPv6 = false;
